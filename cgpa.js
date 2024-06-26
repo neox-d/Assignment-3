@@ -1,5 +1,9 @@
 import { course_details, grades_details } from "./datasheet.js"
 
+window.onload = function() {
+  document.getElementById('coarse').value = '';
+  }
+
 const button = document.getElementById('button');
 
 const form = document.getElementById("cgpa");
@@ -20,9 +24,6 @@ const grades = Object.keys(grades_details);
 
 const m = Object.keys(grades_details).length;
 console.log(m);
-// for (let i=0; i<m; i++) {
-//   grades[i] = Object.keys(grades_details);
-// }
 
 
 console.log(arr);
@@ -30,7 +31,6 @@ console.log(arr);
 console.log(grades_details);
 
 button.addEventListener("click", () => {
-    // alert("You Clicked me!")
   const n = document.getElementById('coarse').value;
     for (let i = 0; i < n; i++) {
         const br = document.createElement("br");
@@ -43,6 +43,13 @@ button.addEventListener("click", () => {
           option.innerHTML = arr[i];
           newInput.appendChild(option);
         }
+        newInput.addEventListener('change', (e) => {
+          document.getElementById('cg').disabled=false;
+          const k = document.getElementById('final');
+          k.value = '';
+          k.innerHTML='';
+          
+        })
         const grade = document.createElement('select');
         grade.id = `grade${i+1}`;
         grade.className = 'grades';
@@ -63,24 +70,36 @@ button.addEventListener("click", () => {
   newButton.type="button";
   newButton.id="cg"
   newButton.value="Calculate CGPA";
-  // newButton.onclick = myFunction();
   form.appendChild(newButton);
+  newButton.addEventListener('click', (e) => {
+      console.log(e);
+      e.target.disabled = true;
+      const _gpa = [];
+      const cr = [];
+
+      for(let i=0; i<n; i++) {
+        const credits = document.getElementById(`course${i + 1}`).value;
+        cr.push(Number(credits));
+        const gpa = document.getElementById(`grade${i + 1}`).value;
+        _gpa.push(credits * gpa);
+  
+      }
+      console.log(_gpa);
+      console.log(cr);
+      let cr_sum = 0;
+      let gpa_sum = 0;
+      for(let i=0; i<n; i++) {
+        cr_sum += cr[i];
+        gpa_sum += _gpa[i];
+      }
+      console.log(cr_sum);
+      console.log(gpa_sum);
+      const cgpa = gpa_sum / cr_sum;
+      const final = document.createElement("p");
+      final.id = 'final';
+      final.value = `Your CGPA is ${cgpa}`;
+      final.innerHTML = `Your CGPA is ${cgpa}`;
+      form.appendChild(final);
+  })
 })
 
-function myFunction() {
-  console.log(2);
-  const _gpa = [];
-  const cr = [];
-    for(i=0; i<n; i++) {
-      const credits = document.getElementById(`course${i + 1}`).value;
-      cr.append(credits);
-      const gpa = document.getElementById(`grade${i + 1}`).value;
-      _gpa[i].append(credits * gpa);
-
-    }
-  const cgpa = sum(gpa) / sum(credits);
-  const final = document.createElement("p");
-  final.value = `Your CGPA is ${cgpa}`;
-  final.innerHTML = `Your CGPA is ${cgpa}`;
-  form.appendChild(final);
-}
